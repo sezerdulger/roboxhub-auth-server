@@ -1,13 +1,14 @@
 #FROM portal-base
 FROM node:9
 RUN apt-get update
-RUN apt-get install -y curl make g++ libzmq3-dev bzip2
+RUN apt-get install -y curl make g++ libzmq3-dev bzip2 dos2unix
 
-COPY ./ /var/ion-portal/
+COPY ./ /auth-server/
 
-WORKDIR /var/ion-portal
-RUN npm install
-RUN npm run build --base-path=/
-RUN chmod +x /var/ion-portal/run.sh
+WORKDIR /auth-server
+RUN npm install --only=production
+RUN chmod +x /auth-server/run.sh
+RUN dos2unix /auth-server/run.sh
+ENV NODE_ENV=prod
 
-ENTRYPOINT [ "/var/ion-portal/run.sh" ]
+ENTRYPOINT [ "/auth-server/run.sh" ]
